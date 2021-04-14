@@ -1,8 +1,16 @@
 [package]
 name = "rust-cloud-discovery"
 version = "0.1.0"
-authors = ["sarowar <sarowar.cse@gmail.com>"]
+authors = ["Md Sarowar Alam <sarowar.cse@gmail.com>"]
 edition = "2018"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/eipi1/rust-cloud-discovery"
+description = """
+Cloud Discovery client in rust
+"""
+categories = ["network-programming"]
+keywords = ["cloud", "discovery"]
 
 [dependencies]
 getset = "0.1"

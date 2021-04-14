@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
 
+/// Represent an instance
 #[derive(Debug, Getters, Clone, Serialize, Deserialize)]
 pub struct ServiceInstance {
     #[getset(get = "pub")]
@@ -50,11 +51,13 @@ impl ServiceInstance {
     }
 }
 
+/// All discovery service provider must implement the trait. Note that, it's based on [async_trait](https://docs.rs/async-trait)
 #[async_trait]
 pub trait DiscoveryService {
     async fn discover_instances(&self) -> Result<Vec<ServiceInstance>, Box<dyn Error>>;
 }
 
+/// Bridge between DiscoveryService and their clients.
 #[allow(dead_code)]
 pub struct DiscoveryClient<T> {
     service: T,
@@ -66,6 +69,7 @@ impl<T: DiscoveryService> DiscoveryClient<T> {
         DiscoveryClient { service: ds }
     }
 
+    /// Returns a list of discovered instances
     pub async fn get_instances(&self) -> Result<Vec<ServiceInstance>, Box<dyn Error>> {
         self.service.discover_instances().await
     }
