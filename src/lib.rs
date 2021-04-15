@@ -1,10 +1,16 @@
+//! Intended to be rust counterpart of Spring Cloud Discovery client.
+//!
+//! ### Implementations
+//! * Kubernetes - https://github.com/eipi1/cloud-discovery-kubernetes
+//!
+
 use async_trait::async_trait;
 use getset::Getters;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
 
-/// Represent an instance
+/// Represents an instance
 #[derive(Debug, Getters, Clone, Serialize, Deserialize)]
 pub struct ServiceInstance {
     #[getset(get = "pub")]
@@ -54,10 +60,11 @@ impl ServiceInstance {
 /// All discovery service provider must implement the trait. Note that, it's based on [async_trait](https://docs.rs/async-trait)
 #[async_trait]
 pub trait DiscoveryService {
+    /// Returns list of instances
     async fn discover_instances(&self) -> Result<Vec<ServiceInstance>, Box<dyn Error>>;
 }
 
-/// Bridge between DiscoveryService and their clients.
+/// Bridge between [DiscoveryService] and their clients.
 #[allow(dead_code)]
 pub struct DiscoveryClient<T> {
     service: T,
