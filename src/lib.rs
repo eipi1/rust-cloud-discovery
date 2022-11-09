@@ -10,6 +10,46 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
 
+#[derive(Debug, Getters, Clone, Serialize, Deserialize)]
+pub struct Port {
+    name: Option<String>,
+    port: u32,
+    protocol: String,
+    app_protocol: Option<String>,
+}
+
+impl Port {
+    pub fn new(
+        name: Option<String>,
+        port: u32,
+        protocol: String,
+        app_protocol: Option<String>,
+    ) -> Self {
+        Self {
+            name,
+            port,
+            protocol,
+            app_protocol,
+        }
+    }
+
+    pub fn get_name(&self) -> &Option<String> {
+        &self.name
+    }
+
+    pub fn get_port(&self) -> u32 {
+        self.port
+    }
+
+    pub fn get_protocol(&self) -> &str {
+        &self.protocol
+    }
+
+    pub fn get_app_protocol(&self) -> &Option<String> {
+        &self.app_protocol
+    }
+}
+
 /// Represents an instance
 #[derive(Debug, Getters, Clone, Serialize, Deserialize)]
 pub struct ServiceInstance {
@@ -17,11 +57,8 @@ pub struct ServiceInstance {
     instance_id: Option<String>,
     #[getset(get = "pub")]
     service_id: Option<String>,
-    #[getset(get = "pub")]
     host: Option<String>,
-    #[getset(get = "pub")]
-    port: Option<usize>,
-    #[getset(get = "pub")]
+    ports: Option<Vec<Port>>,
     //org.springframework.cloud.kubernetes.discovery.DefaultIsServicePortSecureResolver#resolve
     secure: bool,
     #[getset(get = "pub")]
@@ -38,7 +75,7 @@ impl ServiceInstance {
         instance_id: Option<String>,
         service_id: Option<String>,
         host: Option<String>,
-        port: Option<usize>,
+        ports: Option<Vec<Port>>,
         secure: bool,
         uri: Option<String>,
         metadata: HashMap<String, String>,
@@ -48,12 +85,28 @@ impl ServiceInstance {
             instance_id,
             service_id,
             host,
-            port,
+            ports,
             secure,
             uri,
             metadata,
             scheme,
         }
+    }
+
+    /// get host/IP of the instance
+    pub fn host(&self) -> &Option<String> {
+        &self.host
+    }
+
+    /// get all available ports
+    pub fn get_ports(&self) -> &Option<Vec<Port>> {
+        &self.ports
+    }
+
+    /// Get if the default port uses TLS.
+    /// Selection of default port depends on the implementation
+    pub fn is_secure(&self) -> bool {
+        self.secure
     }
 }
 
